@@ -1,0 +1,35 @@
+.login {
+    background-color: #f8f8f8;
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    place-items: center;
+}
+
+.login__text > h4 { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    margin-top: 30px;
+}
+
+.login__container {
+    padding: 100px;
+    text-align: center;
+    background-color: #000000;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.login__container > img {
+    object-fit: contain;
+    height: 300px;
+    margin-bottom: 40px;
+}
+
+.login__container > button {
+    text-transform: inherit;
+    margin-top: 50px;
+    background-color: #5EAAA8;
+    color: white;
+}
+
