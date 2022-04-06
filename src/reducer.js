@@ -1,6 +1,6 @@
 /** initially the user is NOT logged in */
 export const initialState = {
-    user: null                  
+    user: null
 };
 
 /** pushing information into the data layer through dispatch function */
@@ -16,7 +16,7 @@ const reducer = (state,action) => {
                 ...state,           /** keep everyting the same */
                 user: action.user   /** except the user */
             };
-
+        
             default:        {/** if we are not changing the user then don't change anything and return the same old version */}
                 return state;
     }
