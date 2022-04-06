@@ -1,0 +1,68 @@
+.home__header {
+    float: left;
+    width: 100%;
+    background-color: #5EAAA8;
+    padding: 8px;
+    text-align: center;
+    border-bottom: 5px solid #5EAAA8;
+}
+
+.home__header > .account_dropdown_button {
+    background-color: #5EAAA8;
+    float: right;
+    width: 20%;
+}
+
+.dropdown-toggle {
+    position: absolute;
+    right: 30px;
+    top: 12px;
+    border-width: 0;
+    font-size: x-large;
+}
+
+.dropdown-toggle:hover {
+    box-shadow: 2px 2px 2px 2px;
+}
+
+.user__avatar {
+    float: left;
+    margin-right: 10px;
+}
+
+.for__flex {
+    display: flex;
+    justify-content: start;
+    /* background-color: aqua; */
+}
+
+.flexbox__item{
+    width:200px;
+    margin: 10px;
+    border: 3px solid;
+    background-color: #5EAAA8;
+}
+
+.home__body1 {
+    background-color: blue;
+    width: 25%;
+    height: auto;
+    /* min-height: 100px;  */
+}
+
+.home__body2 {
+    border-left: 2px;
+    background-color: blueviolet;
+    width: 50%;
+    overflow: scroll;
+    min-height: 200px;
+}
+
+.home__body3 {
+    /* border-left: 2px;
+    background-color: yellow;
+    width: 25%; */
+    min-height: 150px;
+    /* height: auto; */
+}
+

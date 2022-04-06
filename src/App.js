@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import Login from "./Login.js";
 import Home from "./Home.js";
 import { useStateValue } from './StateProvider';
+import {BrowserRouter as Router,Routes,Switch,Route} from "react-router-dom";
 
 function App() {
   const [{user},dispatch] = useStateValue();
@@ -15,7 +16,10 @@ function App() {
         <Login />  
       ) 
       : (
-        <Home name={user.displayName}/> 
+        
+        <Home name={user.displayName} profile={user?.photoURL}/>
+        
+
       ) 
     }
     </div>
