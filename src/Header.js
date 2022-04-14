@@ -20,7 +20,8 @@ function Header(props) {
                 </button>
                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a className="dropdown-item" >Account Settings</a>
-                    <Link to={`/`}>Log out</Link>
+                    <a className="dropdown-item" >Log out</a>
+                    {/* <Link to={`/`}>Log out</Link> */}
                     {/* <Link to="/Login" >Log out</Link>
                     <a className="dropdown-item" onClick={null_user}>Log out</a> */}
                 </div>

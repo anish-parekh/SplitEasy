@@ -20,7 +20,6 @@ function App() {
       ) 
       : (
          <Home name={user.displayName} profile={user?.photoURL}/>
-          
       ) 
     }
     </div>
