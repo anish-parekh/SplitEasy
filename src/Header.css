@@ -1,0 +1,35 @@
+.home__header {
+    width: 100%;
+    background-color: #5EAAA8;
+    padding: 8px;
+    text-align: left;
+    border-bottom: 5px solid #5EAAA8;
+}
+
+.home__header > img {
+    height: 60px;
+    width: 200px;
+}
+
+.account_dropdown_button {
+    background-color: #5EAAA8;
+    float: right;
+    width: 20%;
+}
+
+.account_dropdown_button > .dropdown-toggle {
+    position: absolute;
+    right: 30px;
+    top: 12px;
+    border-width: 0;
+    font-size: x-large;
+}
+
+account_dropdown_button > .dropdown-toggle:hover {
+    box-shadow: 2px 2px 2px 2px;
+}
+
+.user__avatar {
+    float: left;
+    margin-right: 10px;
+}

@@ -5,11 +5,15 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import reducer, {initialState} from "./reducer";
 import {StateProvider} from "./StateProvider";
+import {BrowserRouter,Routes,Switch,Route} from "react-router-dom";
+
 
 ReactDOM.render(
   <React.StrictMode>
     <StateProvider initialState={initialState} reducer={reducer}>
-      <App />
+    <BrowserRouter>
+    <App />
+    </BrowserRouter>
     </StateProvider>
   </React.StrictMode>,
   document.getElementById('root')

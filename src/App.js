@@ -5,6 +5,9 @@ import Login from "./Login.js";
 import Home from "./Home.js";
 import { useStateValue } from './StateProvider';
 import {BrowserRouter as Router,Routes,Switch,Route} from "react-router-dom";
+import Activity from "./Activity.js";
+import Dashboard from "./Dashboard.js";
+import Temp from "./Temp";
 
 function App() {
   const [{user},dispatch] = useStateValue();
@@ -13,13 +16,11 @@ function App() {
     {
       !user 
       ? (
-        <Login />  
+          <Login />
       ) 
       : (
-        
-        <Home name={user.displayName} profile={user?.photoURL}/>
-        
-
+         <Home name={user.displayName} profile={user?.photoURL}/>
+          
       ) 
     }
     </div>

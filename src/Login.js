@@ -9,7 +9,7 @@ import GoogleIcon from '@material-ui/icons';
 
 function Login() {
     const [{},dispatch] = useStateValue();
-  const signIn = () => {
+    const signIn = () => {
         auth.signInWithPopup(provider)
             .then((result) => {
                 dispatch({
@@ -19,12 +19,11 @@ function Login() {
             })
             .catch((error) => alert(error.message));      
     };
-    
   return (
     <div className='login'>
         <div className='login__container'>
             <img
-                src="https://i.ibb.co/w6mBN3s/Split-Easy-logo.jpg"
+                src="/images/SplitEasy_logo.jpeg"
                 alt="No Image Found!"
             />
 
