@@ -8,8 +8,13 @@ import {BrowserRouter as Router,Routes,Switch,Route} from "react-router-dom";
 import Footer from "./Footer.js"
 import Header from "./Header";
 import db from './firebase';
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, } from "firebase/firestore";
 import firebase from "firebase/compat/app";
+import { getDatabase, ref } from "firebase/database"
+import { ref as sRef } from 'firebase/storage';
+import { get, query, onValue } from "firebase/database"
+// import express from "express";
+// import mongoose from 'mongoose';
 
 function Home(props)
 {
@@ -25,6 +30,7 @@ function Home(props)
     const [headerColor,setHeaderColor] = useState({color: "green"});
     const [userAlreadyExists,setUserAlreadyExists] = useState(0);
 
+    var flag_exist=0;
     // const navigate = useNavigate();
     // function logout(){
     //    return (
@@ -71,53 +77,38 @@ function Home(props)
                 setTotalAmount("");
             }
         });
+
     }
 
     useEffect(() => {
             renderData();
-            // var tmp_expenses = expenses;
-
-            // tmp_expenses.sort((a,b) => (b.timestamp - a.timestamp));
-            // setExpenses(tmp_expenses);
-            // console.log(tmp_expenses);
     },[])
 
     useEffect(() => {      // this works as a callback function for setCnt
         db.collection("friends").doc(String(cnt)).set({
-            name: friendName, 
+            name: friendName.toLowerCase(), 
             netAmount: amount,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        // db.collection('friends').doc(String(cnt)).collection('expenses').add({
-        //     id: 1,
-        //     expense: amount
-        // });
-        // const docRef = doc(db, "users", exp);
-        // const docSnap = getDoc(docRef);
-
-        // console.log(docSnap.data());
-        // setDocId(() => db.collection("users").doc().get().then(snap => {size  = snap.size }));
-        // console.log(exp);
-        // window.location.reload();
         renderData();
 
         setFriendName("");
         setAmount("");
-        // var tmp_expenses = expenses;
 
-        // tmp_expenses.sort((a,b) => (b.timestamp - a.timestamp));
-        // setExpenses(tmp_expenses);
-        // console.log("==");
-        // console.log(tmp_expenses);
     },[cnt])
-        //   .onSnapshot(snapshot => (
-        //     setExpenses(snapshot.docs.map((doc) => doc.data()))
-        //   ))
-        // })
-    
-        // console.log(expenses);
 
+    function make_new_entry()
+    {
+        if(!flag_exist)
+            setCnt(expenses.length + 1);
+            else
+            {
+                setFriendName("");
+                setAmount("");
+                setTimeout(renderData,1000);
+            }
+    }
     const sendExp = (event) => {
         event.preventDefault();
         if(friendName.length==0 || amount.length==0)
@@ -132,76 +123,80 @@ function Home(props)
         else
         {   
             /*FOR UPDATE */
-
-            // db.collection('friends')
-            // .get().then((querySnapshot) => {
-            // // Loop through the data and store
-            // // it in array to display
-            //     querySnapshot.forEach(element => {    
-            //         var data = element.data();
-            //         if(data.name.toLowerCase()==friendName)
-            //         {
-            //             setUserAlreadyExists(1);
-            //             var tmp_netAmount = parseInt(data.netAmount);
-            //             tmp_netAmount = tmp_netAmount + parseInt(amount);
-            //             console.log("--");
-            //             console.log(tmp_netAmount);
-            //             console.log(data.netAmount);
-            //             db.collection("friends").doc(element.id).update({
-            //                 netAmount: tmp_netAmount.toString()
-            //             });
-            //             console.log("==");
-            //             console.log(tmp_netAmount);
-            //             console.log(data.netAmount);
-            //         }            
+            flag_exist=0;
+            db.collection('friends')
+            .get().then((querySnapshot) => {
+            // Loop through the data and store
+            // it in array to display
+                querySnapshot.forEach(element => {    
+                    var data = element.data();
                     
-            //     });
-            // });
+                    if(data.name.toLowerCase()==friendName.toLowerCase())
+                    {
+                        // setUserAlreadyExists(1);
+                        flag_exist=1;
+                        // console.log("-->");
+                        // console.log(flag_exist);
+                        var tmp_netAmount = parseInt(data.netAmount);
+                        tmp_netAmount = tmp_netAmount + parseInt(amount);
+                        // console.log(data.name);
+                        // console.log(tmp_netAmount);
+                        // console.log(data.netAmount);
+                        db.collection("friends").doc(element.id).update({
+                            netAmount: tmp_netAmount.toString()
+                        });
+                        // console.log(element.data().name);
+                        // console.log(tmp_netAmount);
+                        // console.log(element.data().netAmount);
+                    }            
+                    
+                });
 
-            // renderData();
+            });
 
-            // if(!userAlreadyExists)
+            setTimeout(make_new_entry,1000);
+
+            renderData();
+            
             /* FOR UPDATE */
-                setCnt(expenses.length + 1);
         }
-        // console.log(cnt);
-        // setCnt(cnt+1);
+        renderData();
     };
     return (
        <div> 
         <Header name={props.name} profile={props.profile}/>
         <div className="for__flex">
 
-            <div className="home__body1">
-                <form>
-                    <TextField 
-                        label="Name" 
-                        variant="standard"
-                        value={friendName} 
-                        onChange={(event) => setFriendName(event.target.value)} 
-                        style= {{marginTop: "10px"}} />
+        <div className="home__body1">
+            <form>
+                <TextField 
+                    label="Name" 
+                    variant="standard"
+                    value={friendName} 
+                    onChange={(event) => setFriendName(event.target.value)} 
+                    style= {{marginTop: "10px"}} />
 
-                    <TextField 
-                        label="Amount" 
-                        variant="standard"
-                        value={amount}
-                        onChange={(event) => setAmount(event.target.value)} 
-                        style= {{marginTop: "10px"}} />
+                <TextField 
+                    label="Amount" 
+                    variant="standard"
+                    value={amount}
+                    onChange={(event) => setAmount(event.target.value)} 
+                    style= {{marginTop: "10px"}} />
 
-                    <div class="dropdown" style= {{marginTop: "10px"}}>
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {expType}
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                            <button class="dropdown-item" type="button" onClick={() => setExpType("You paid, split equally")}>You paid, split equally</button>
-                            <button class="dropdown-item" type="button" onClick={() => setExpType("You are owed the full amount")}>You are owed the full amount</button>
-                            <button class="dropdown-item" type="button" onClick={() => setExpType(`${friendName} paid, split equally`)}>{friendName} paid, split equally</button>
-                            <button class="dropdown-item" type="button" onClick={() => setExpType(`${friendName} is owed the full amount`)}>{friendName} is owed the full amount</button>
-                        </div>
+                <div class="dropdown" style= {{marginTop: "10px"}}>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {expType}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <button class="dropdown-item" type="button" onClick={() => setExpType("You paid, split equally")}>You paid, split equally</button>
+                        <button class="dropdown-item" type="button" onClick={() => setExpType("You are owed the full amount")}>You are owed the full amount</button>
+                        <button class="dropdown-item" type="button" onClick={() => setExpType(`${friendName} paid, split equally`)}>{friendName} paid, split equally</button>
+                        <button class="dropdown-item" type="button" onClick={() => setExpType(`${friendName} is owed the full amount`)}>{friendName} is owed the full amount</button>
                     </div>
-                    <button onClick={sendExp} className="btn btn-primary" type="submit" style= {{marginTop: "10px"}}>Add expense</button>
-                </form>
-            </div>
+                </div>
+                <button onClick={sendExp} className="btn btn-primary" type="submit" style= {{marginTop: "10px"}}>Add expense</button>
+            </form>
+        </div>
 
             <div className="home__body2">
                 <h3 className="net__balance" style= {headerColor}>

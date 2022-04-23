@@ -3,10 +3,10 @@ import { Route } from "react-router-dom";
 import Login from "./Login";
 /** initially the user is NOT logged in */
 export const initialState = {
-    // user: {
-    //     displayName: "anish"
-    // }
-    user: null
+    user: {
+        displayName: "anish"
+    }
+    // user: null
 };
 
 /** pushing information into the data layer through dispatch function */

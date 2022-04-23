@@ -2,13 +2,12 @@ import React from 'react'
 import "./Header.css";
 import {Avatar} from "@material-ui/core";
 import {Link, Navigate} from "react-router-dom";
+import fire from "./firebase.js";
 
 function Header(props) {
-    // function logOut() {
-    //     return (
-    //     <Navigate to={`/login`} />
-    //     );
-    // }
+    function logOut() {
+            window.location.reload();
+    }
     return (
         <div className="header">
             <div className="home__header">
@@ -20,7 +19,8 @@ function Header(props) {
                 </button>
                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a className="dropdown-item" >Account Settings</a>
-                    <a className="dropdown-item" >Log out</a>
+                    <a className="dropdown-item" onClick={logOut}>Log out</a>
+
                     {/* <Link to={`/`}>Log out</Link> */}
                     {/* <Link to="/Login" >Log out</Link>
                     <a className="dropdown-item" onClick={null_user}>Log out</a> */}
