@@ -20,17 +20,22 @@ function Home(props)
 {
     const [{user},dispatch] = useStateValue();
     const [expenses,setExpenses] = useState([]);
+    const [friends,setFriends] = useState([]);
     const [friendName,setFriendName] = useState("");
     const [amount,setAmount] = useState("");
     const [docId,setDocId] = useState("");
-    const [cnt,setCnt] = useState(0);
+    const [cnt,setCnt] = useState(1);
     const [expType,setExpType] = useState("You paid, split equally");
     const [totalAmount,setTotalAmount] = useState("");
     const [headerString,setHeaderString] = useState("");
     const [headerColor,setHeaderColor] = useState({color: "green"});
     const [userAlreadyExists,setUserAlreadyExists] = useState(0);
 
+
     var flag_exist=0;
+    var update_flag=0;
+    var create_flag=0;
+    var flag_count=1;
     // const navigate = useNavigate();
     // function logout(){
     //    return (
@@ -43,19 +48,30 @@ function Home(props)
 
     // };
     function renderData() {
-        db.collection('friends')
+        db.collection('user_final')
         .get().then((querySnapshot) => {
             // Loop through the data and store
             // it in array to display
             setExpenses([]);
+            // setFriends([]);
             var temp_total = 0;
             querySnapshot.forEach(element => {
                 var data = element.data();
-                setExpenses(arr => [...arr , data]);
-                if(data.netAmount.length>0)
-                {
-                    // console.log(data.netAmount);
-                    temp_total=temp_total + parseInt(data.netAmount);
+                setFriends(arr => [...arr, data]);
+                flag_count=flag_count+1;
+                if(user.displayName.toLowerCase()==data.name.toLowerCase())
+                {   
+                    // setExpenses(arr => [...arr , data]);
+                    // var tmp_expenses_data = data.expenses;
+                    // console.log(tmp_expenses_data);
+                    data.expenses.map(e => {
+                        setExpenses(arr => [...arr , e]);
+                        if(e.amt.length>0)
+                        {
+                            // console.log(data.netAmount);
+                            temp_total=temp_total + parseInt(e.amt);
+                        }
+                    });
                 }
             });
             if(temp_total<0)
@@ -76,6 +92,8 @@ function Home(props)
                 setHeaderColor({color: "grey"});
                 setTotalAmount("");
             }
+            setCnt(friends.length+1);
+            flag_count=flag_count+1;
         });
 
     }
@@ -84,45 +102,168 @@ function Home(props)
             renderData();
     },[])
 
-    useEffect(() => {      // this works as a callback function for setCnt
-        db.collection("friends").doc(String(cnt)).set({
-            name: friendName.toLowerCase(), 
-            netAmount: amount,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
+    // useEffect(() => {      // this works as a callback function for setCnt
+    //     db.collection("friends").doc(String(cnt)).set({
+    //         name: friendName.toLowerCase(), 
+    //         netAmount: amount,
+    //         timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    //     });
         
-        renderData();
+    //     renderData();
 
-        setFriendName("");
-        setAmount("");
+    //     setFriendName("");
+    //     setAmount("");
 
-    },[cnt])
+    // },[cnt])
 
-    function make_new_entry()
+    // function make_new_entry()
+    // {
+    //     if(!flag_exist)
+    //         setCnt(expenses.length + 1);
+    //     else
+    //     {
+    //         setFriendName("");
+    //         setAmount("");
+    //         setTimeout(renderData,1000);
+    //     }
+    // }
+
+    function add_new_entry_xy(frnd_x,frnd_y,local_amt)
     {
-        if(!flag_exist)
-            setCnt(expenses.length + 1);
-            else
-            {
-                setFriendName("");
-                setAmount("");
-                setTimeout(renderData,1000);
-            }
+        db.collection('user_final')
+        .get().then((querySnapshot) => {
+            querySnapshot.forEach(element => {    
+                var data = element.data();
+                
+                if(data.name.toLowerCase()==frnd_x.toLowerCase())
+                {
+                    db.collection("user_final").doc(element.id).update({
+                        expenses : [...data.expenses, {name: frnd_y, amt: local_amt}]
+                    });
+
+                    return;
+                }           
+            });
+        });
     }
+
+    function update_or_add_both_sides(frnd_x,frnd_y,local_amt)
+    {
+
+        db.collection('user_final')
+            .get().then((querySnapshot) => {
+            // Loop through the data and store
+            // it in array to display
+                querySnapshot.forEach(element => {    
+                    var data = element.data();
+                    
+                    if(data.name.toLowerCase()==frnd_x.toLowerCase())
+                    {
+                        update_flag=0;
+                        data.expenses.map(e => {
+                            if(e.name.toLowerCase() == frnd_y.toLowerCase())
+                            {
+                                update_flag=1;
+                                var tmp_local_amt = parseInt(e.amt);
+                                tmp_local_amt = tmp_local_amt + parseInt(local_amt);
+                                e.amt = tmp_local_amt.toString();
+                                db.collection("user_final").doc(element.id).update({
+                                    expenses : data.expenses
+                                });
+
+                                return;
+                            }
+                        });
+                        
+                        setTimeout(()=>{
+                            if(!update_flag)
+                            {
+                                add_new_entry_xy(frnd_x,frnd_y,local_amt);
+                            }
+                        },1000);
+                    }            
+                    
+                });
+
+            });
+    }
+
+    function check_if_user_exists_or_create_it(user_x) 
+    {
+        db.collection('user_final')
+        .get().then((querySnapshot) => {
+        // Loop through the data and store
+        // it in array to display
+            create_flag=0;
+            querySnapshot.forEach(element => {    
+                var data = element.data();
+                
+                if(data.name.toLowerCase()==user_x.toLowerCase())
+                {
+                    console.log("found");
+                    console.log(user_x);
+                    create_flag=1;    
+                    return ;     
+                }            
+                
+            });
+
+            setTimeout(()=>{
+                if(!create_flag)
+                {
+                    console.log("-*-*-");
+                    console.log(user_x);
+                    var tstmp = new Date();
+                    db.collection("user_final").doc(String(tstmp.getTime())).set({
+                        name: user_x.toLowerCase(), 
+                        netAmount: 0,
+                        expenses : []
+                    });
+                    
+                }
+            },1000);
+            renderData();
+
+        });
+    }
+
     const sendExp = (event) => {
         event.preventDefault();
         if(friendName.length==0 || amount.length==0)
             alert("Enter a valid name and amount!");
-        
-        // console.log(exp);
-
-        // console.log("You typed --> ", exp);
-        
-        // console.log(expenses.length);
 
         else
+        {
+            renderData();
+            check_if_user_exists_or_create_it(user.displayName); 
+             
+
+            setTimeout(() => {
+                update_or_add_both_sides(user.displayName,friendName,amount);
+                renderData();
+
+                check_if_user_exists_or_create_it(friendName);
+
+                setTimeout(() => {
+                    update_or_add_both_sides(friendName,user.displayName,(-1*parseInt(amount)).toString());
+                    setFriendName("");
+                    setAmount("");
+                    setTimeout(renderData,1000);
+                },5000);
+
+                
+            },1000);
+
+           //setTimeout(renderData,1000);
+           
+        }
+        /*
+        if(friendName.length==0 || amount.length==0)
+            alert("Enter a valid name and amount!");
+    
+        else
         {   
-            /*FOR UPDATE */
+            // FOR UPDATE 
             flag_exist=0;
             db.collection('friends')
             .get().then((querySnapshot) => {
@@ -158,8 +299,9 @@ function Home(props)
 
             renderData();
             
-            /* FOR UPDATE */
+            // FOR UPDATE
         }
+        */
         renderData();
     };
     return (
@@ -224,8 +366,8 @@ function Home(props)
                                 <td>
                                     {data.name}
                                 </td>
-                                <td style= {data.netAmount>0 ? {color: "green"} : {color: "red"}}>
-                                    {data.netAmount}
+                                <td style= {data.amt>0 ? {color: "green"} : {color: "red"}}>
+                                    {data.amt}
                                 </td>
                             </tr>
                             )

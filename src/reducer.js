@@ -4,7 +4,7 @@ import Login from "./Login";
 /** initially the user is NOT logged in */
 export const initialState = {
     user: {
-        displayName: "anish"
+        displayName: "Anish Parekh"
     }
     // user: null
 };
