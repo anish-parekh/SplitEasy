@@ -66,11 +66,14 @@ function Home(props)
                     // var tmp_expenses_data = data.expenses;
                     // console.log(tmp_expenses_data);
                     data.expenses.map(e => {
-                        setExpenses(arr => [...arr , e]);
-                        if(e.amt.length>0)
+                        if(e.amt!="0")
                         {
-                            // console.log(data.netAmount);
-                            temp_total=temp_total + parseFloat(e.amt);
+                            setExpenses(arr => [...arr , e]);
+                            if(e.amt.length>0)
+                            {
+                                // console.log(data.netAmount);
+                                temp_total=temp_total + parseFloat(e.amt);
+                            }
                         }
                     });
                 }
@@ -205,8 +208,8 @@ function Home(props)
 
     const sendExp = (event) => {
         event.preventDefault();
-        if(friendName.length==0 || amount.length==0)
-            alert("Enter a valid name and amount!");
+        if(friendName.length==0 || amount.length==0 || amount=="0")
+            alert("Enter a valid name or amount!");
 
         else
         {
@@ -221,7 +224,7 @@ function Home(props)
             }
             else if(expType==type2)
             {
-                temp_amount= ((-1*parseFloat(amount)).toString());
+                temp_amount=(amount);
             }
             else if(expType==type3)
             {
@@ -229,7 +232,7 @@ function Home(props)
             }
             else if(expType==type4)
             {
-                temp_amount=(amount);
+                temp_amount= ((-1*parseFloat(amount)).toString());
             }
             else
             {
