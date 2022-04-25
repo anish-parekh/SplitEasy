@@ -70,7 +70,7 @@ function Home(props)
                         if(e.amt.length>0)
                         {
                             // console.log(data.netAmount);
-                            temp_total=temp_total + parseInt(e.amt);
+                            temp_total=temp_total + parseFloat(e.amt);
                         }
                     });
                 }
@@ -103,31 +103,6 @@ function Home(props)
             renderData();
     },[])
 
-    // useEffect(() => {      // this works as a callback function for setCnt
-    //     db.collection("friends").doc(String(cnt)).set({
-    //         name: friendName.toLowerCase(), 
-    //         netAmount: amount,
-    //         timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    //     });
-        
-    //     renderData();
-
-    //     setFriendName("");
-    //     setAmount("");
-
-    // },[cnt])
-
-    // function make_new_entry()
-    // {
-    //     if(!flag_exist)
-    //         setCnt(expenses.length + 1);
-    //     else
-    //     {
-    //         setFriendName("");
-    //         setAmount("");
-    //         setTimeout(renderData,1000);
-    //     }
-    // }
 
     function add_new_entry_xy(frnd_x,frnd_y,local_amt)
     {
@@ -165,8 +140,8 @@ function Home(props)
                             if(e.name.toLowerCase() == frnd_y.toLowerCase())
                             {
                                 update_flag=1;
-                                var tmp_local_amt = parseInt(e.amt);
-                                tmp_local_amt = tmp_local_amt + parseInt(local_amt);
+                                var tmp_local_amt = parseFloat(e.amt);
+                                tmp_local_amt = tmp_local_amt + parseFloat(local_amt);
                                 e.amt = tmp_local_amt.toString();
                                 db.collection("user_final").doc(element.id).update({
                                     expenses : data.expenses
@@ -235,15 +210,40 @@ function Home(props)
 
         else
         {
-            
+            var type1="You paid, split equally";
+            var type2="You are owed the full amount";
+            var type3=`${friendName} paid, split equally`;
+            var type4=`${friendName} is owed the full amount`;
+            var temp_amount = amount;
+            if(expType==type1)
+            {
+                temp_amount= ((parseFloat(amount)/2).toString());
+            }
+            else if(expType==type2)
+            {
+                temp_amount= ((-1*parseFloat(amount)).toString());
+            }
+            else if(expType==type3)
+            {
+                temp_amount= ((-1*parseFloat(amount)/2).toString());
+            }
+            else if(expType==type4)
+            {
+                temp_amount=(amount);
+            }
+            else
+            {
+                alert("Invalid split type!");
+            }
+
             check_if_user_exists_or_create_it(user.displayName); 
 
             setTimeout(() => {
-                update_or_add_both_sides(user.displayName,friendName,amount);
+                update_or_add_both_sides(user.displayName,friendName,temp_amount);
                 setTimeout(() => {
                     check_if_user_exists_or_create_it(friendName);
                     setTimeout(() => {
-                        update_or_add_both_sides(friendName,user.displayName,(-1*parseInt(amount)).toString());
+                        update_or_add_both_sides(friendName,user.displayName,((-1*parseFloat(temp_amount))).toString());
                         setFriendName("");
                         setAmount("");    
                     },timeout*5);
