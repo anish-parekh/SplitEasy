@@ -15,6 +15,7 @@ import { ref as sRef } from 'firebase/storage';
 import { get, query, onValue } from "firebase/database"
 // import express from "express";
 // import mongoose from 'mongoose';
+const timeout=100;
 
 function Home(props)
 {
@@ -138,7 +139,7 @@ function Home(props)
                 if(data.name.toLowerCase()==frnd_x.toLowerCase())
                 {
                     db.collection("user_final").doc(element.id).update({
-                        expenses : [...data.expenses, {name: frnd_y, amt: local_amt}]
+                        expenses : [...data.expenses, {name: frnd_y.toLowerCase(), amt: local_amt}]
                     });
 
                     return;
@@ -180,7 +181,7 @@ function Home(props)
                             {
                                 add_new_entry_xy(frnd_x,frnd_y,local_amt);
                             }
-                        },1000);
+                        },timeout);
                     }            
                     
                 });
@@ -221,7 +222,7 @@ function Home(props)
                     });
                     
                 }
-            },1000);
+            },timeout);
             renderData();
 
         });
@@ -234,75 +235,26 @@ function Home(props)
 
         else
         {
-            renderData();
+            
             check_if_user_exists_or_create_it(user.displayName); 
-             
 
             setTimeout(() => {
                 update_or_add_both_sides(user.displayName,friendName,amount);
-                renderData();
-
-                check_if_user_exists_or_create_it(friendName);
-
                 setTimeout(() => {
-                    update_or_add_both_sides(friendName,user.displayName,(-1*parseInt(amount)).toString());
-                    setFriendName("");
-                    setAmount("");
-                    setTimeout(renderData,1000);
-                },5000);
-
-                
-            },1000);
-
-           //setTimeout(renderData,1000);
-           
-        }
-        /*
-        if(friendName.length==0 || amount.length==0)
-            alert("Enter a valid name and amount!");
-    
-        else
-        {   
-            // FOR UPDATE 
-            flag_exist=0;
-            db.collection('friends')
-            .get().then((querySnapshot) => {
-            // Loop through the data and store
-            // it in array to display
-                querySnapshot.forEach(element => {    
-                    var data = element.data();
+                    check_if_user_exists_or_create_it(friendName);
+                    setTimeout(() => {
+                        update_or_add_both_sides(friendName,user.displayName,(-1*parseInt(amount)).toString());
+                        setFriendName("");
+                        setAmount("");    
+                    },timeout*5);
                     
-                    if(data.name.toLowerCase()==friendName.toLowerCase())
-                    {
-                        // setUserAlreadyExists(1);
-                        flag_exist=1;
-                        // console.log("-->");
-                        // console.log(flag_exist);
-                        var tmp_netAmount = parseInt(data.netAmount);
-                        tmp_netAmount = tmp_netAmount + parseInt(amount);
-                        // console.log(data.name);
-                        // console.log(tmp_netAmount);
-                        // console.log(data.netAmount);
-                        db.collection("friends").doc(element.id).update({
-                            netAmount: tmp_netAmount.toString()
-                        });
-                        // console.log(element.data().name);
-                        // console.log(tmp_netAmount);
-                        // console.log(element.data().netAmount);
-                    }            
-                    
-                });
+                },timeout*5);
 
-            });
+            },timeout*5);
 
-            setTimeout(make_new_entry,1000);
-
-            renderData();
-            
-            // FOR UPDATE
+           setTimeout(renderData,20*timeout);
         }
-        */
-        renderData();
+       renderData();
     };
     return (
        <div> 
