@@ -1,5 +1,7 @@
 .login {
-    background-color: #f8f8f8;
+    /* background-color: #f8f8f8; */
+    background-image: url("./login_background_image.jpeg");
+    background-size: 100% 100%;
     height: 100vh;
     width: 100vw;
     display: grid;
@@ -13,7 +15,7 @@
 }
 
 .login__container {
-    padding: 100px;
+    padding: 40px;
     text-align: center;
     background-color: #000000;
     border-radius: 10px;

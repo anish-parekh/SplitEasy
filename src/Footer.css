@@ -1,11 +1,12 @@
 .footer {
-    position: fixed;
+    /* position: fixed; */
     padding: 10px 10px 0px 10px;
     bottom: 0;
     width: 100%;
     /* Height of the footer*/ 
     height: 40px;
-    background:#5EAAA8;
+    background-color: rgba(255, 255, 255, 0);
+    /* background:#5EAAA8; */
     text-align: center;
     /* display: flex;
     margin-top: 600px;

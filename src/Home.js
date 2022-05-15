@@ -260,7 +260,7 @@ function Home(props)
        renderData();
     };
     return (
-       <div> 
+       <div className="bg_img"> 
         <Header name={props.name} profile={props.profile}/>
         <div className="for__flex">
 
@@ -312,28 +312,50 @@ function Home(props)
                 }
                 </p> */}
 
-                <table className="table table-bordered">
-                    {
-                        expenses.filter((data) => data.name.length>0).map((data) => {
-                            
-                            return(
-                            <tr>
-                                <td>
-                                    {data.name}
-                                </td>
-                                <td style= {data.amt>0 ? {color: "green"} : {color: "red"}}>
-                                    {data.amt}
-                                </td>
+                <div> 
+                    <table className="table-striped table table-bordered">
+                        <thead className="thead-dark">
+                            <tr align="center" className="table_border">
+                                <th scope="col" className="table_border">Name</th>
+                                <th scope="col" className="table_border">Expense Amount</th>
                             </tr>
-                            )
-                            {/* console.log(expenses);
-                            <Frame name={data.name} netAmount={data.netAmount}/> */}
-                        })
-                    }
-                </table>
+                        </thead>
+                        <tbody>
+                            {
+                                expenses.filter((data) => data.name.length>0).map((data) => {
+                                    
+                                    return(
+                                    <tr className="table_border">
+                                        <td align="center" className="table_border">
+                                            {data.name} 
+                                        </td>
+                                        <td style= {data.amt>0 ? {color: "green"} : {color: "red"}} align="center" className="table_border">
+                                            {data.amt}
+                                        </td>
+                                    </tr>
+                                    )
+                                    {/* console.log(expenses);
+                                    <Frame name={data.name} netAmount={data.netAmount}/> */}
+                                })
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                
             </div>
 
             <div className="home__body3">
+                <div style= {{marginTop: "10px"}}>
+                    <button className="btn btn-primary">Dashboard</button>
+                </div>
+                <div style= {{marginTop: "10px"}}>
+                    <button className="btn btn-disabled">Activity</button>
+                </div>
+                <div className="upgrade_pro">
+                    <h3><img src="/images/crown-solid.svg" width="35" height="35"></img>   Upgrade to Pro!</h3>
+                    <p><i>Subscribe to SplitEasy Pro to get access to exclusive features like expense charts and for an ad-free seamless experience!</i></p>
+                    <button className="btn upgrade_button"><b>Get SplitEasy Pro!</b></button>
+                </div>
             </div>
 
         </div>
