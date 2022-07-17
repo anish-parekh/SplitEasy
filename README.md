@@ -6,3 +6,5 @@ This project is meant to offer a shared expenses solution that is faster, easier
 
 The following are some of the main features and the functionalities to add to the system as per the user requirement. The features are divided into two parts: Core features and optional features of which core features are important for the application's activity while the optional features will add some new functionality to the system. The last option features might be executed as time permits.
 
+You can access the web-page from below link:
+https://spliteasy-96f81.web.app/
